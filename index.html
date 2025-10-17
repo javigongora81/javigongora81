@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hello World animado</title>
+    <style>
+        :root{
+            --bg1:#0f2027;
+            --bg2:#203a43;
+            --bg3:#2c5364;
+            --text-size: clamp(2.5rem, 8vw, 6rem);
+        }
+
+        html,body{height:100%; margin:0}
+        body{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background: linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
+            background-size: 300% 300%;
+            animation: bgShift 12s linear infinite;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            -webkit-font-smoothing:antialiased;
+            color:#fff;
+        }
+
+        @keyframes bgShift{
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
+        }
+
+        .stage{
+            text-align:center;
+            padding:2rem;
+            filter: drop-shadow(0 10px 30px rgba(2,6,23,0.6));
+        }
+
+        .hello{
+            font-size: var(--text-size);
+            line-height:1;
+            letter-spacing: .03em;
+            display:inline-block;
+            user-select:none;
+            -webkit-user-select:none;
+            white-space:nowrap;
+            position:relative;
+        }
+
+        /* colorful gradient fill clipped to text */
+        .hello .char{
+            display:inline-block;
+            padding:0 .02em;
+            transform-origin:50% 100%;
+            will-change:transform, color;
+            animation: wave 900ms cubic-bezier(.2,.85,.32,1) var(--delay) infinite alternate;
+            background: linear-gradient(90deg, #ffd166, #ef476f, #118ab2, #06d6a0);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 6px 20px rgba(2,6,23,0.5);
+        }
+
+        @keyframes wave{
+            0%{ transform: translateY(0) rotate(0deg); filter: blur(0); background-position:0% 50%}
+            100%{ transform: translateY(-22%) rotate(-3deg); filter: blur(.15px); background-position:100% 50%}
+        }
+
+        /* subtle glow pulse on hover */
+        .hello:hover .char{
+            animation-duration: 700ms;
+        }
+
+        /* small subtitle */
+        .sub{
+            margin-top:.6rem;
+            font-size:clamp(.9rem,2.2vw,1.1rem);
+            color: rgba(255,255,255,0.85);
+            opacity:.95;
+        }
+
+        /* reduce motion preference */
+        @media (prefers-reduced-motion: reduce){
+            .hello .char{ animation: none; transform:none; }
+            body{ animation:none }
+        }
+    </style>
+</head>
+<body>
+    <main class="stage" role="main">
+        <h1 class="hello" id="hello">Hello World!</h1>
+        <div class="sub">Animación CSS por letra</div>
+    </main>
+
+    <script>
+        // Separar el texto en spans para animar letra por letra
+        (function(){
+            const el = document.getElementById('hello');
+            const text = el.textContent || '';
+            el.textContent = '';
+            for(let i=0;i<text.length;i++){
+                const ch = text[i];
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.style.setProperty('--delay', (i * 0.06) + 's');
+                // mantener espacios visibles
+                span.textContent = ch === ' ' ? '\u00A0' : ch;
+                el.appendChild(span);
+            }
+        })();
+    </script>
+</body>
+</html>
